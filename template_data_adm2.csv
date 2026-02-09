@@ -1,0 +1,6 @@
+COUNTRY,ADM1_NAME,ADM2_NAME,ISO3,ADM1_PCODE,ADM2_PCODE,HA.NAT.EQ-EXP,HA.NAT.FL-EXP,HA.NAT.LS-EXP,HA.NAT.ED-DEF,HA.NAT.CH-ERO,HA.NAT.ST-TC2
+United Republic of Tanzania,Dodoma,Kondoa,TZA,TZ01,TZ0101,1.0,0.008,0.024,0.04,45,0.0
+United Republic of Tanzania,Dodoma,Mpwapwa,TZA,TZ01,TZ0102,1.0,0.012,0.015,0.03,42,0.0
+United Republic of Tanzania,Dodoma,Kongwa,TZA,TZ01,TZ0103,1.0,0.005,0.01,0.02,40,0.0
+United Republic of Tanzania,Arusha,Monduli,TZA,TZ02,TZ0201,0.8,0.015,0.03,0.05,,0.0
+United Republic of Tanzania,Arusha,Arusha Urban,TZA,TZ02,TZ0202,0.7,0.02,0.025,0.04,,0.0

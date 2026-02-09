@@ -1,0 +1,1418 @@
+Dimension,Category,Component,INFORM Id,Indicator,Description,Source,URL used,Alternative URL,Resolution,File name,Data format,Measure Unit,Data year,Notes - Data Collection,Notes - Data Processing,Status - Data Collection,Status - Data Processing,Status - Data Calibration,,,
+Hazards & Exposure,Natural,Coastal hazards,HA.NAT.CH-ERO,Coastal Erosion,A continental dataset that includes annual shorelines and rates of coastal change along the entire African coastline. Generated for 2000 to 2023.  Combines satellite data from the Digital Earth Africa program with tidal modelling to map the typical location of the coastline at mean sea level each year.  Data used was  regularly spaced point features around the coastline of Africa with an attribute rate_time reprepsnting annual rates of change (in metres per year) calculated by linearly regressing annual shoreline distances against time (excluding outliers). Negative values indicate retreat and positive values indicate growth.,Digital Earth Africa,https://docs.digitalearthafrica.org/en/latest/data_specs/Coastlines_specs.html,https://www.arcgis.com/home/item.html?id=d12f5f00fa5c41dea3391eef49ba5215&sublayer=1,Subnational (adm2),AGOL layer: Rate of change of coastlines in Africa,Geospatial vector,meters / year,2000 - 2022,To find working version of data that could be extracted or analysed used AGOL (ArcGIS Online) to search for ‘Digital Earth Africa’ then added layer Rate of change of coastlines in Africa.,"This dataset contain erosion values (meters per year) as points located along coastlines.  Negative values represent erosion while positive values represent coasline increase Processnig steps:
+
+1. Download point shapefile from AGOL for entire continent 
+2. Attribute each data point to nearest admin 1  region
+3. Exclude non-SADC countries 
+4. Compute value per admin1 by averaging all points value",Done,Done,Done,,,
+Hazards & Exposure,Natural,Coastal hazards,HA.NAT.CH-SEA,Sea Level Rise,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Natural,Drought,HA.NAT.DR-FRE,Historic Drought Frequency,Historic Agricultural Drought Frequency Maps depict the frequency of severe drought in areas where 30 percent/50 percent of the cropland/grassland has been affected. The historical frequency of severe droughts (as defined by ASI) is based on the entire ASI times series (1984-2023).,FAO,https://data.apps.fao.org/catalog/iso/f8568e67-46e7-425d-b779-a8504971389b,"https://www.fao.org/giews/earthobservation/country/index.jsp?lang=en&code=MDG  
+https://www.arcgis.com/home/item.html?id=71a7a03a60e44734adf8c2bab91600f5",Subnational (adm1),AGOL layer: Historic Drought Frequency,Geospatial raster,years,1984-2023,"Added layer from ArcGIS Online.  Filtered to use cropland, with % of land affected > 50%.  Used for both seasons","1. Data filtered for cropland and area affected > 50%. If data exist for two seasons, the maximum value is used.
+
+2. Value per admin1 region is compute by averaging all pixels within it
+
+3. Data is provided in frequency range (tbc...)",Done,Done,Done,,,
+Hazards & Exposure,Natural,Earthquake,HA.NAT.EQ-EXP,Earthquake exposure,"The Global Earthquake Model (GEM) Global Seismic Hazard Map (version 2023.1) depicts the geographic distribution of the Peak Ground Acceleration (PGA) with a 10% probability of being exceeded in 50 years, computed for reference rock conditions (shear wave velocity, Vs30, of 760-800 m/s)",Global Earthquake Model (GEM),https://www.globalquakemodel.org/product/global-seismic-hazard-map,,Subnational (adm2),v2023_1_pga_475_rock_3min,Geospatial raster,index,2023,"From https://www.globalquakemodel.org/product/global-seismic-hazard-map used Open Version Download
+Note: no data for Sechelles or Mauritius ","1. Used zonal statistics to compute mean risk value for a given admin1 region
+2. This will be improved to account for population exposure (instead of area exposure - https://en.wikipedia.org/wiki/Peak_ground_acceleration)",Done,Done,Done,,,
+Hazards & Exposure,Natural,Environmental Degradation,HA.NAT.ED-DEF,Deforestation - Treecover Loss,Deforestation derived from global forest watch data. Input data is derived from Landsat (approx 30m resolution). Tree cover is defined as cannopy closure for all vegetation taller than 5m.  For detail of input datasets see https://data.globalforestwatch.org/documents/941f17325a494ed78c4817f9bb20f33a/explore,Global Forest Watch,https://data.globalforestwatch.org/documents/941f17325a494ed78c4817f9bb20f33a/explore,,Subnational (adm2),"File name format repeated for each tile covering SADC region:
+Hansen_GFC-2022-v1.10_treecover2000_20S_020E.tif
+Hansen_GFC-2022-v1.10_gain_20S_020E.tif
+Hansen_GFC-2022-v1.10_lossyear_20S_020E.tif",Geospatial raster,%,2000-2022,"Downloaded all relevant tiles for the three varibales:
+- treecover2000
+- gain
+- lossyear","1. Merged tiles into a single raster per variable
+2. Reclassified treecover (reclass 0 = 0, 1-100 = 1)
+3. Reclassified Loss year: reclass 0 = 0, 1-22 = 1  [22 being max year at date of processing
+4. Calculated net loss (factoring in gain). Raster calculator used to compute gain - loss.  Remaining values indicate: 0 = no change; 1 =  gain; -1 = loss
+5. Summed values for tree cover (2000) and net loss per admin area
+6. In table calculated %gain and % loss based on values above",Done,Done,Done,,,
+Hazards & Exposure,Natural,Environmental Degradation,HA.NAT.DE-ERO,Soil Erosion,Soil erosion defined as the difference between natural soil erosion and actual soil erosion globally. ,JRC,https://esdac.jrc.ec.europa.eu/content/land-degradation-debt#tabs-0-description=1,,Subnational (adm1),Soil_erosion_debt.tif,Geospatial raster,Mg/ha/yr,Unknown (prep2017),Submitted data request via Land degradation debt - ESDAC - European Commission ,Used zonal statistics to compute the mean erosion per admin1,Done,Done,Done,,,
+Hazards & Exposure,Natural,Flood,HA.NAT.FL-EXP,Flood exposure,"Data set representing inundation along the river network, for seven different flood return periods (from 1-in-10-years to 1-in-500-years). 1 in 100 year was chosen for analysis. Input data values provide flood depth in metres.  This was simplified to include any depth of flooding, from which we calaculated the % of the population exposed to a 1 in 100 year flood event",JRC,https://data.jrc.ec.europa.eu/dataset/jrc-floods-floodmapgl_rp50y-tif#dataaccess,,Subnational (adm2),Original tiles in name format: ID127_S21_E10_RP100_depth.tif,Geospatial raster,%,"n/a
+
+modelled future risk",Downloaded relevant tiles from https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/CEMS-GLOFAS/flood_hazard/RP100/,"1. Merged together all tiles into a single raster layer
+2. Reclassified values to simply represent flood & not flood (value is flood depth. We take all depths in account)
+3. Multiplied the population (GHSL 100m) by flood data (ensuring retain resolution of population data)
+4. Used Zonal statistics as table to sum the tot population and flooded population per admin area, then calculate the percentage",Done,Done,Done,,,
+Hazards & Exposure,Natural,Heatwave,HA.NAT.HW-EXP,Heatwave exposure,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Natural,Landslide,HA.NAT.LS-EXP,Landslide exposure,"Qualitative representation of global landslide hazard at a global scale.  Dataset used combines the median annual rainfall triggered landslide hazard with earthquake hazard triggerd, simplifying it into 4 ranks from very low to high",World Bank,https://datacatalog.worldbank.org/search/dataset/0037584,,Subnational (adm2),LS_TH_COG.tif,Geospatial raster,%,1980-2018,Downloaded the Global Landslide Hazard map (TH ranks) - COG layer as tiff https://datacatalogfiles.worldbank.org/ddh-published/0037584/DR0045417/LS_TH_COG.tif?versionId=2023-01-18T20:43:29.3801128Z,"1. Reclassified two variations of the layer 
+High risk (value of 4 = 1, all other values = 0)
+Medium rish (value of 3 or 4 = 1, all other values =0)
+
+2. Multiplied reclassified layer by GHSL 2025 population (keeping resolution of population layer) to define population at risk
+
+3. Used zonal statistics as table to compute
+- population per admin 1
+- population in high landslide risk zones
+- population in medium or high landslide risk zones
+
+4. Calculated percentage at risk",Done,Done,Done,,,
+Hazards & Exposure,Natural,Lightning,HA.NAT.LI-CAS,Lightning casualities,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Natural,Storms & Cyclone,HA.NAT.ST-TC,Cyclone exposure,Datasets containing tropical cyclone maximum wind speed (in m/s) return periods.  For full description see https://data.4tu.nl/datasets/0ea98bdd-5772-4da8-ae97-99735e891aff/4,4TU.Research Data,https://data.4tu.nl/datasets/0ea98bdd-5772-4da8-ae97-99735e891aff/4,,Subnational (adm2),STORM_FIXED_RETURN_PERIODS_SI_100_YR_RP.tif,Geospatial raster,%,2023,"Dowload fixed return period data https://data.4tu.nl/file/0ea98bdd-5772-4da8-ae97-99735e891aff/0b98c6f5-c7af-45bb-bb6e-dac53e1b8d55
+Choose layer with the appropriate spatial extent with 100 year return period","1. Reclassify values (0-32 = 0; x > 33 = 1)
+2. Multiply population raster by reclassified layer (keeping resolution of the population data)
+3. Use zonal statistics to calculate the population exposed to cyclones per 100 year and compare with baseline population to calculate % exposed",Done,Done,Done,,,
+Hazards & Exposure,Natural,Storms & Cyclone,HA.NAT.ST-ST,Storm exposure,Datasets containing tropical cyclone maximum wind speed (in m/s) return periods.  For full description see https://data.4tu.nl/datasets/0ea98bdd-5772-4da8-ae97-99735e891aff/4,4TU.Research Data,https://data.4tu.nl/datasets/0ea98bdd-5772-4da8-ae97-99735e891aff/4,,Subnational (adm2),STORM_FIXED_RETURN_PERIODS_SI_100_YR_RP.tif,Geospatial raster,%,2023,"Dowload fixed return period data https://data.4tu.nl/file/0ea98bdd-5772-4da8-ae97-99735e891aff/0b98c6f5-c7af-45bb-bb6e-dac53e1b8d55
+Choose layer with the appropriate spatial extent with 100 year return period","1. Reclassify values (0-18 = 0; x > 18 = 1)
+2. Multiply population raster by reclassified layer (keeping resolution of the population data)
+3. Use zonal statistics to calculate the population exposed to cyclones per 100 year and compare with baseline population to calculate % exposed",Done,Done,Done,,,
+Hazards & Exposure,Natural,Storms & Cyclone,HA.NAT.ST-TC2,Cyclone exposure - max speed,Datasets containing tropical cyclone maximum wind speed (in m/s) return periods.  For full description see https://data.4tu.nl/datasets/0ea98bdd-5772-4da8-ae97-99735e891aff/4,4TU.Research Data,https://data.4tu.nl/datasets/0ea98bdd-5772-4da8-ae97-99735e891aff/4,,Subnational (adm2),STORM_FIXED_RETURN_PERIODS_SI_100_YR_RP.tif,Geospatial raster,%,2023,"Dowload fixed return period data https://data.4tu.nl/file/0ea98bdd-5772-4da8-ae97-99735e891aff/0b98c6f5-c7af-45bb-bb6e-dac53e1b8d55
+Choose layer with the appropriate spatial extent with 100 year return period",,Done,Done,Done,,,
+Hazards & Exposure,Natural,Volcano,HA.NAT.VC-EXP,Volcano exposure,"Data from the National Oceanic and Atmospheric Administration (NOAA), displays
+global locations of significant volcanic eruptions.  Conatins value for Volcanic Explosivity Index (VEI) ",NOAA,https://www.arcgis.com/home/item.html?id=3318aafcd304414bb8da481d173c551d ,,Subnational (adm1),AGOL layer Significant Global Volcanic Eruptions,Geospatial vector,index,unknown,Added layer from AGOL,"1. Spatial join to assign admin 1 details to points
+2. Summary statistics to determine max VEI per admin area",Done,Done,Done,,,
+Hazards & Exposure,Natural,Wildfire,HA.NAT.WF-BURN,Burned Area,"Global dataset of individual fire perimeters for 2002-2023, provided as polygon features.",JRC (GWIS),https://gwis.jrc.ec.europa.eu/apps/country.profile/downloads,,Subnational (adm1),"Original layers per year named in format: 
+original_globfire_filtered_2023.shp",Geospatial vector,%,2019-2023,Downloaded GlobalFire Fire Perimeters [2002 - 2023] from https://gwis.jrc.ec.europa.eu/apps/country.profile/downloads,"1. Merged layers for most recent 5 years
+2.Dissolved features to simplify the polygons and added an attribute field containing the value wildfire
+3. Ran Union tool to union burnt areas with admin
+4. Added new field to attribute table and used Calculate Geometry to calculate the area in km2
+5. In the field containing the value wildfire selected all blank entries and assigned a value of ‘none’
+6. Created Pivot table to have a row per admin pcode and fields for wildfire & none with values representing area  (km2)
+7. Calculated % area burnt [remember to add values for none and burnt to get total area]",Done,Done,Done,,,
+Hazards & Exposure,Natural,Wildfire,HA.NAT.WF-FWI,Fire Weather Index,"Computed from five components. The first three components are numeric ratings of the moisture content of litter  and other fine fuels, the average moisture content of loosely compacted organic layers of moderate depth, and the average moisture content of deep, compact organic layers. The last two components are the rate of fire spread if fuel is available for combustion, and the frontal fire intensity.",GFDRR,Broken link: https://www.geonode-gfdrrlab.org/layers/hazard:csiro_wf_max_fwi_rp30,,Subnational (adm1),csiro_wf_max_fwi_rp30,Geospatial raster,index,2022,Data provided via Tom Hughes as per Madagascar model as data links broken,"1. Used zonal statistics to calculate min, mean, max per admin 1
+2. As resolution was course a number of smaller admin areas returned no value. For these centroids were created and Extract Multiple Values to Points tool (in ArcGIS) used to extract value from underlying pixel.",Done,Done,Done,,,
+Hazards & Exposure,Natural,"Zoonoses, Plants & Pests",HA.NAT.ZPP-AD,Animal Diseases,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Natural,"Zoonoses, Plants & Pests",HA.NAT.ZPP-PD,Plant Diseases,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Natural,"Zoonoses, Plants & Pests",HA.NAT.ZPP-PE,Pests,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Human,Conflict Intensity,HA.HUM.CI-CBAR,Conflict Barometer,"The HIIK's annual publication Conflict Barometer describes the recent trends in global conflict developments, escalations, de-escalations, and settlements.",Heidelberg Institute for International Conflict Research,https://hiik.de/data-and-maps/static-maps/?lang=en,,Subnational (adm1),subdivision_int_2022.csv,Spreadsheet,Index,2022,"Download the most recent Map Kit under ""Data & Maps"" => ""Static Maps"". After downloading the data and unzipping the folder, the dataset is found in subfolder ""HIIK_maps 2022_base data""",,Done,Done,Done,,,
+Hazards & Exposure,Human,Conflict Risk,HA.HUM.CR-GCRI,GCRI derived Conflict probability,"The Global Conflict Risk Index (GCRI) estimates the risk of internal conflict at the country level within the next 4 years. INFORM Risk uses the GCRI probability estimates for the “any conflict” category, which includes the sub-categories “state-based conflict”, “non-state conflict”, and “one-sided violence”. The values used on the SADC regional model were obtained directly from the INFORM Global Risk Index",JRC,https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk/Results-and-data/moduleId/1782/id/469/controller/Admin/action/Results,,National (adm0),INFORM_Risk_2025_v069.xlsx,Spreadsheet,%,2024,,"Indicator value on tab ""Indicator Data"", column ""Projected Conflict Probability""",Done,Done,Done,,,
+Hazards & Exposure,Human,Hazardous Material,HA.HUM.HMAT,Hazardous Material,,,,,,,,,,,,Not available,N/A,N/A,,,
+Hazards & Exposure,Human,Internal Violence,HA.HUM.VIO-EVE,Number of Events,"ACLED (Armed Conflict Location & Event Data Project) is the most comprehensive public collection of political violence data for developing states. This dataset contains information on the specific dates and locations of political violence, the types of event, the groups involved, fatalities and changes in territorial control. Information is recorded on the battles, killings, riots, and recruitment activities of rebels, governments, militias, armed groups, protesters and civilians. This indicators corresponds to the total number of events over the last 5 years, regardless of fatalities. All types of events are considered.",ACLED,http://www.acleddata.com/,,Subnational (adm1),2019-01-01-2024-06-30-Angola-Botswana-Comoros-Democratic_Republic_of_Congo-eSwatini-Lesotho-Madagascar-Malawi-Mauritius-Mozambique-Namibia-Seychelles-South_Africa-Tanzania-Zambia-Zimbabwe.csv,Geospatial vector,Number,2020-2024,"An account is needed to download ACLED data. After the account is created, a key is generated that allows for downloading data using the provided URL. ","All events (regardless of fatalities number) between January 2020 and June 2024. Before the model publication in 2025, this should be recomputed to all 2024 events.",Done,Done,Done,,,
+Hazards & Exposure,Human,Internal Violence,HA.HUM.VIO-FAT,Number of Fatalities,"ACLED (Armed Conflict Location & Event Data Project) is the most comprehensive public collection of political violence data for developing states. This dataset contains information on the specific dates and locations of political violence, the types of event, the groups involved, fatalities and changes in territorial control. Information is recorded on the battles, killings, riots, and recruitment activities of rebels, governments, militias, armed groups, protesters and civilians. This indicators corresponds to the total number of fatalities over the last 5 years. All types of events are considered.",ACLED,http://www.acleddata.com/,,Subnational (adm1),2019-01-01-2024-06-30-Angola-Botswana-Comoros-Democratic_Republic_of_Congo-eSwatini-Lesotho-Madagascar-Malawi-Mauritius-Mozambique-Namibia-Seychelles-South_Africa-Tanzania-Zambia-Zimbabwe.csv,Geospatial vector,Number,2020-2024,"An account is needed to download ACLED data. After the account is created, a key is generated that allows for downloading data using the provided URL. ","All fatalities between between January 2020 and June 2024. Before the model publication in 2025, this should be recomputed to all 2024 events.",Done,Done,Done,,,
+Hazards & Exposure,Human,Vehicle Accidents,HA.HUM.ACC,Vehicle Accidents,,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Socio-Economics,Development & Poverty,VU.SE.POV-HDI,Human Development Index,"The Human Development Index measure development by combining indicators of life expectancy, educational attainment and income into a composite index.",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),SHDI-SGDI-Total 8.0.csv,Spreadsheet,index,2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Subnational HDI"" -> ""Data file""","The value for this indicator is under column ""shdi"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Socio-Economics,Development & Poverty,VU.SE.POV-GDI,Gender Development Index,"The GDI measures gender gaps in achievements in three basic dimensions of human development: health (measured by female and male life expectancy at birth), knowledge (measured by female and male expected years of schooling for children and mean years of schooling for adults aged 25 years and older) and living standards (measured by female and male estimated GNI per capita). It is a ratio of the female to the male HDI. ",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),SHDI-SGDI-Total 8.0.csv,Spreadsheet,index,2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Subnational HDI"" -> ""Data file""","The value for this indicator is under column ""sgdi"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Socio-Economics,Development & Poverty,VU.SE.POV-MPI,Multidimensional Poverty Index,"The Multidimensional Poverty MPI Index identifies overlapping deprivations at the household level across the same three dimensions as the Human Development Index (living standards, health, and education) and shows the average number of poor people and deprivations with which poor households contend.",OPHI,https://ophi.org.uk/global-mpi/2023,,Subnational (adm1),,Spreadsheet,index,2012-2021,"Download available at subnational-level under ""Data Table 5: Subnational Results 2023"" for most countries. Country-level data used for South Africa, Seychelles and Lesotho (""Data Table 1: National results 2023""). No data for Mauritius","The subnational subdivision available on the OPHI Poverty dataset is very similar to the one used here but some differences exist. As a general rule, when one region in the OPHI data corresponds to two or more current ones, we apply the same value to all of them. On the other hand, when the OPHI data is more granular, we aggregate values with a population-weighed average. Details on each country is given below.
+
+Botswana - Data at sub-district (admin2) level aggregated at region (admin1) level
+
+Lesotho - Data available at geography regions, not administrative. Using country-level data instead
+
+Madagascar - Antananarivo and Analamanga have different values on the source. Aggregated both for Analamanga
+
+Malawi - Data at district (admin2) level aggregated at region (admin1) level
+
+Mauritius - No data available (national or subnational)
+
+Namibia - Source has a single value for Kavango (instead of Kavango East and Kavango West). Used same value for both
+
+Seychelles - No Subnational-level data available. Using country-level value instead.
+
+South Africa - No Subnational-level data available. Using country-level value instead.
+
+Tanzania - Data available per zone (9 in total) instead of  the 31 regions. Same value used for all regions within the same zone",Done,Done,Done,,,
+Vulnerability,Socio-Economics,Development & Poverty,VU.SE.POV-GINI,Wealth Inequality,Gini coefficient wealth inequality,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,index,2011 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""gini"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Socio-Economics,Economic Dependency,VU.SE.DEP-ODA,Net ODA received (% of GNI),"Net official development assistance (ODA) consists of disbursements of loans made on concessional terms (net of repayments of principal) and grants by official agencies of the members of the Development Assistance Committee (DAC), by multilateral institutions, and by non-DAC countries to promote economic development and welfare in countries and territories in the DAC list of ODA recipients. It includes loans with a grant element of at least 25 percent (calculated at a rate of discount of 10 percent).",World Bank,https://data.worldbank.org/indicator/DT.ODA.ODAT.GN.ZS,,National (adm0),API_DT.ODA.ODAT.GN.ZS_DS2_en_csv_v2_3441102.csv,Spreadsheet,%,2018-2022,"Download button (csv, xml, excel) on the main page. Indicator is named ""Net ODA received (% of GNI)""",5-year average (2018-2022). Seychelles most recent data is from 2017 so using a 5-year average between 2013-2017 for this country,Done,Done,Done,,,
+Vulnerability,Socio-Economics,Economic Dependency,VU.SE.DEP-REM,Personal remittances,"Personal transfers consist of all current transfers in cash or in kind made or received by resident households to or from nonresident households. Personal transfers thus include all current transfers between resident and nonresident individuals. Compensation of employees refers to the income of border, seasonal, and other short-term workers who are employed in an economy where they are not resident and of residents employed by nonresident entities. Data are the sum of two items defined in the sixth edition of the IMF's Balance of Payments Manual: personal transfers and compensation of employees. Data are in current U.S. dollars.",World Bank,https://data.worldbank.org/indicator/BX.TRF.PWKR.DT.GD.ZS,,National (adm0),API_BX.TRF.PWKR.DT.GD.ZS_DS2_en_csv_v2_3438006.csv,Spreadsheet,%,2019-2023,"Download button (csv, xml, excel) on the main page. Indicator is named ""Personal remittances, received (% of GDP)""",5-year average (2019-2023),Done,Done,Done,,,
+Vulnerability,Socio-Economics,Economic Dependency,VU.SE.DEP-DR,Dependency Ratio,"Dependency ratio, dependend population compared to the working age population (15-64)",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,ratio,2011 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""depratio"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Socio-Economics,Habitat,VU.SE.HAB-INF,Population in informal settlements,"The share of urban population living in slum households, based on 4 out of 5 household shelter deprivations defined by UN-Habitat as indicators of informality: lack of access to improved water, lack of access to improved  sanitation, lack of sufficient living area and quality/durability of structure.",UN Habitat,https://data.unhabitat.org/pages/housing-slums-and-informal-settlements,,National (adm0),SDG_11-1-1.xlsx,Spreadsheet,%,2022,,Eswatini is listed as Swaziland on the original dataset,Done,Done,Done,,,
+Vulnerability,Socio-Economics,Habitat,VU.SE.HAB-RISK,Number of homes in high-risk areas,,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Socio-Economics,Habitat,VU.SE.HAB-URB,Urban Population,% of population living in urban areas in region,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2013 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""urban"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Socio-Economics,Livelihoods,VU.SE.LV-FS,Food Security - Insufficient food,Population at IPC level 2 or above,IPC,https://www.ipcinfo.org/,,Subnational (adm1),,Spreadsheet,% pop phase 2 or higher,2022-2024,From https://www.ipcinfo.org/ipc-country-analysis/en/?maptype=77106 seach for country then from latest survey download the tables,"Where required use pivot table to summarise by admin 1 (sometimes admin 1 names needed looking up and adding to table)
+Summed pop in phase 2 or higher for the current period
+Calculated this as percentage of total pop listed",Done,In progress,In progress,,,
+Vulnerability,Socio-Economics,Livelihoods,VU.SE.LV-IPC,Food Security - IPC Classification,"Differentiation between different levels of severity of acute food insecurity, classifying units of analysis in five distinct phases: (1) Minimal/None, (2) Stressed, (3) Crisis, (4) Emergency, (5) Catastrophe/Famine. ",IPC,https://www.ipcinfo.org/,,Subnational (adm1),,Spreadsheet,,2022-2024,,,Checking,,,,,
+Vulnerability,Vulnerable Groups,Displaced People,VU.VG.DP-IDP,Internal Displaced People,Internally displaced persons - IDPs refers to the number of people living in displacement as of the end of each year. It covers both confllict and disaster IDP's,IDMC,https://www.internal-displacement.org/database/displacement-data/,,Subnational (adm1),IDMC_GIDD_Internal_Displacement_Disaggregated.xlsx,Geospatial vector,number of people,2023,"Click on ""Download Dataset"" and then on ""Disaggregate data 2023"". Data available on both geojson and xlsx format.",,Done,Done,In progress,,,
+Vulnerability,Vulnerable Groups,Displaced People,VU.VG.DP-REF,Refugees and asylum-seekers,"Number of refugees and asylum-seekers per country of asylum, regardless of country of origin",UNHCR,https://www.unhcr.org/refugee-statistics,,National (adm0),,Spreadsheet,number of people,,,,Checking,,,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-LEXP,Life Expectancy,Life expectancy at Birth (LEXP) . ,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),SHDI-SGDI-Total 8.0.csv,Spreadsheet,years,2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Subnational HDI"" -> ""Data file""","The value for this indicator is under column ""lifexp"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-CHO,Cholera Reported Cases,Number of reported cholera cases,WHO,https://worldhealthorg.shinyapps.io/page1cholera_global_overview/,https://www.who.int/emergencies/disease-outbreak-news/item/2022-DON426,National (adm0),,,,,,,Checking,,,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-MALAMORT,Malaria - mortality rate,"Number of deaths from malaria per 100,000 populaition during a defined year",Malaria Atlas Project,https://malariaatlas.org/,,Subnational (adm1),,Spreadsheet,,,,,Checking,,,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-MALAPREV,Malaria prevalence,Proportion of children 2 to 10 years with malaria infection for a given year,Malaria Atlas Project,https://malariaatlas.org/,,Subnational (adm1),,Spreadsheet,max malaria prevalence per person,2022,,,Done,Done,Done,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-MEASLES,Measles Incidence,"Measles incidence per 1,000,000 total population",WHO,https://immunizationdata.who.int/global/wiise-detail-page/measles-reported-cases-and-incidence?YEAR=,,National (adm0),Measles reported cases and incidence 2024-10-09 08-48 UTC.xlsx,Spreadsheet,"per 1,000,000 population",2019-2023,,5-year average (2019-2023),Done,Done,In progress,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-TUB,Tuberculosis Incidence,Number of newly diagnosed tuberculosis cases,GOV.UK,https://www.gov.uk/government/publications/tuberculosis-tb-by-country-rates-per-100000-people,,National (adm0),,Spreadsheet,,,,,Checking,,,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-DST,DST Prevalence,,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-DISAB,People living with disabilities,,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Vulnerable Groups,Health Conditions,VU.VG.HC-CHR,People living with chronic ilnesses,,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Vulnerable Groups,Children Health and Nutrition,VU.VG.CH-MORTNEO,Neonatal mortality,"Number of neonates dying before 28 days of age, per 1,000 live births in a given year",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,"per 1,000 live births ",2006 - 2021,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""nnmort"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Vulnerable Groups,Children Health and Nutrition,VU.VG.CH-MORTINF,Infant mortality,"Number of deaths of children less than one year of age, per 1000 live births in a given year",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,"per 1,000 live births ",2011 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""infmort"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Vulnerable Groups,Children Health and Nutrition,VU.VG.CH-MORTCH,Child mortality,"Number of children dying between 1 year of age and five year of age, per 1,000 live births in a given year",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,"per 1,000 live births ",2006 - 2021,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""chmort"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Vulnerable Groups,Children Health and Nutrition,VU.VG.CH-UW,Children Underweight,Percentage of children aged 0-59 months who are below minus two standard deviations from median weight-for-age of the World Health Organization (WHO) Child Growth Standards,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2000 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""underweight"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Vulnerability,Vulnerable Groups,Economic,VU.VG.ECO-DISAFF,People affected by natural disasters,Population affected by natural disasters in the last 3 years,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Vulnerable Groups,Economic,VU.VG.ECO-UNEMP,Unemployed population (15 - 59 years old),,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Vulnerable Groups,Economic,VU.VG.ECO-FEMHH,Female headed households,,,,,,,,,,,,Not available,N/A,N/A,,,
+Vulnerability,Vulnerable Groups,Economic,VU.VG.ECO-CHILDHH,Child headed households,,,,,,,,,,,,Not available,N/A,N/A,,,
+Coping Capacity,Infrastructure,Access to health care,CC.INF.HC-EXP,Health expenditure per capita,Per capita total expenditure on health (THE) expressed in Purchasing Power Parities (PPP) international dollar.,WHO,https://apps.who.int/nha/database/Select/Indicators/en,,National (adm0),NHA indicators.xlsx,Spreadsheet,US$ per capita,2017-2021,"Go to ""Data Explorer"". Under ""Indicators and data"", select ""INDICATORS"" => ""AGGREGATES"" => ""Current Health Expenditure per Capita in US$"". Select relevant countries and years. Click on ""View data and build report"" and then on the excel file symbo for download",5-year average (2017-2021),Done,Done,Done,,,
+Coping Capacity,Infrastructure,Access to health care,CC.INF.HC-BCG,BCG Immunization Coverage,Percentage of children aged 1 who received a BCG vaccination,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2006 - 2021,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""bcgage1"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Access to health care,CC.INF.HC-DTP,DTP3 Immunization Coverage,Percentage of children aged 1 who received a DTP3 vaccination,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2006 - 2021,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""dtp3age1"". Data is also available for DTP1 and DTP2
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Access to health care,CC.INF.HC-MEASLES,Measles Immunization Coverage,Percentage of children aged 1 who received a measles vaccination,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2006 - 2021,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""measlesage1"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Access to health care,CC.INF.HC-PHY,Physicians density,"Number of medical doctors (physicians), including generalist and specialist medical practitioners, per 10,000 population.",WHO,https://apps.who.int/gho/data/view.main.HWFMEDv,,National (adm0),data.csv,Spreadsheet,"per 10,000 population",2018,"Select ""Download filtered data as: CSV table"". The page may take some time to load and show the table and the download button","Used 2018 as the reference as it's the most recent year where data is available for all countries. Half of the countries have more recent data, ranging from 2019 to 2021.",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Access to health care,CC.INF.HC-FAC,Density of health facilities,Density of health facilities per capita. The HDX database of health facilities was developed from a variety of government and non-government sources from 50 countries in sub-Saharan Africa. It uses multiple geocoding methods to provide a comprehensive spatial inventory of 98 745 public health facilities. ,HDX,https://data.humdata.org/dataset/health-facilities-in-sub-saharan-africa,,Subnational (adm1),sub-saharan_health_facilities.shp,Geospatial vector,per capita,2019,,"The total number of health facilities per admin1 region is computed through a geospatial join between the facilities' coordinates and the administrative boundaries. During calibration, this value is divided by the admin1 population to obtain a density indicator",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Economic capacity,CC.INF.ECO-INC,Household income,Household income is a measure of the combined incomes of all people sharing a particular household or place of residence,World Bank,https://data.worldbank.org/indicator/NY.ADJ.NNTY.PC.CD,,National (adm0),API_NY.ADJ.NNTY.PC.CD_DS2_en_csv_v2_3435320.csv,Spreadsheet,US$ per capita,2017-2021,"Download button (csv, xml, excel) on the main page. Indicator is named ""Adjusted net national income per capita (current US$)""",5-year average (2017-2021),Done,Done,Done,,,
+Coping Capacity,Infrastructure,Economic capacity,CC.INF.ECO-IWI,International Wealth Index,The international Wealth Index is an asset-based wealth index that runs from 0 (no assets) to 100 (all assets) and is comparable across place and time,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,index,2013 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""iwi"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Economic capacity,CC.INF.ECO-GDP,Gross National Income per capita,Log Gross National Income per capita in thousands of US Dollars (2011 PPP).,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),SHDI-SGDI-Total 8.0.csv,Spreadsheet,Log - Thousands of US$,2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Subnational HDI"" -> ""Data file""","The value for this indicator is under column ""lgnic"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,WASH,CC.INF.WASH-SAN,People using at least basic sanitation services (% of population),"The percentage of people using at least basic sanitation services, that is, improved sanitation facilities that are not shared with other households.  This indicator encompasses both people using basic sanitation services as well as those using safely managed sanitation services.   Improved sanitation facilities include flush/pour flush to piped sewer systems, septic tanks or pit latrines; ventilated improved pit latrines, compositing toilets or pit latrines with slabs.",WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply and Sanitation,https://washdata.org/,,National (adm0),JMP_2023_WLD.xlsx,Spreadsheet,%,2022,"Data download directly from the download's page (https://washdata.org/data/downloads) under ""Household"" => ""World file""","Data available from 2022 for all countries except Comoros (2019). Tab ""Sanitation"", column ""Total"" => ""At least basic""",Done,Done,Done,,,
+Coping Capacity,Infrastructure,WASH,CC.INF.WASH-WF,People using at least basic drinking water services (% of population),"The percentage of people using at least basic water services.  This indicator encompasses both people using basic water services as well as those using safely managed water services.  Basic drinking water services is defined as drinking water from an improved source, provided collection time is not more than 30 minutes for a round trip.  Improved water sources include piped water, boreholes or tubewells, protected dug wells, protected springs, and packaged or delivered water.",WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply and Sanitation,https://washdata.org/,,National (adm0),JMP_2023_WLD.xlsx,Spreadsheet,%,2022,"Data download directly from the download's page (https://washdata.org/data/downloads) under ""Household"" => ""World file""","Data available from 2022 for all countries except Comoros (2019) and Mauritius (2017. Tab ""Water"", column ""Total"" => ""At least basic""",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Communication,CC.INF.COM-ROAD,Percentage of unpaved roads,Africa Infrastructure Knowledge Program,,,,,,,,,,,Not available,N/A,N/A,,,
+Coping Capacity,Infrastructure,Communication,CC.INF.COM-ELEC,Access to electricity,Percentage of households with electricity in region,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2013 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""electr"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Communication,CC.INF.COM-INT,Internet access,Percentage of households with internet access in region,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2011 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""internet"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Communication,CC.INF.COM-PHONE,Cellphone ownership,Percentage of households with a cellphone in region,Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),Area Database Data v441.csv,Spreadsheet,%,2011 - 2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Area Database"" -> ""Data file""","The value for this indicator is under column ""cellphone"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Education,CC.INF.EDU-ALIT,Adult literacy rate,"Total is the percentage of the population age 15 and above who can, with understanding, read and write a short, simple statement on their everyday life.",World Bank,https://data.worldbank.org/indicator/SE.ADT.LITR.ZS?most_recent_value_desc=true,http://stats.uis.unesco.org/unesco,National (adm0),API_SE.ADT.LITR.ZS_DS2_en_csv_v2_111.csv,Spreadsheet,%,2020-2022,Download csv file drect from the main page,"Most recent data available between 2020-2022 depending on country, except for Botswana (2013).",Done,Done,Done,,,
+Coping Capacity,Infrastructure,Education,CC.INF.EDU-YRS,Mean years at school,"Mean years schooling of population 25+. The mean years of schooling 
+of adults aged 25+ (MYS), reflects the current situation with regard to 
+education in a society.
+Mean years of schooling was computed by using the Global Data Lab 
+Area Database, taking for each region the average number of years of 
+education completed by adults aged 25 and over in the survey and census 
+datasets. In most of these datasets educational level is measured in 
+years of education completed. In a restricted number of cases, education
+ was measured by the highest completed education level. In those cases, 
+the data was turned into years of education on the basis of information 
+on the number of years it normally takes to complete a certain level in 
+the specific country. ",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),SHDI-SGDI-Total 8.0.csv,Spreadsheet,years,2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Subnational HDI"" -> ""Data file""","The value for this indicator is under column ""msch"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+Coping Capacity,Institutional,DRR implementation,CC.INS.DRR-SEN,Sendai Framework for Action,"Score of adoption and implementation of national strategies for managing disaster risk, 2023. Score from 0 (worst) to 1 (best) measuring alignment of country disaster risk reduction strategies with the Sendai Framework.",UNDRR,https://ourworldindata.org/grapher/legislative-provisions-for-managing-disaster-risk,,National (adm0),legislative-provisions-for-managing-disaster-risk.csv,Spreadsheet,index,2017-2022,"On the download page click ""Download"" => ""Data"" => ""Download full data"" and then unzip the file to obtain the csv","Most recent value used for most countries. For a few countries, there was a drop to 0 or near on the last year available. This is potentially a data error so we've used the year before that instead. No data available for Lesotho, Madagascar, Seychelles and DRC (a value of 0 was used for them). ",Done,Done,Done,,,
+Coping Capacity,Institutional,DRR implementation,CC.INS.DRR-TCK,Traditional Community Knowledge,,,,,,,,,,,,Not available,N/A,N/A,,,
+Coping Capacity,Institutional,DRR implementation,CC.INS.DRR-EWS,Early Warning System,Number of people targeted by Anticipatory Action frameworks in 2023,Anticipation Hub,https://www.anticipation-hub.org/advocate/anticipatory-action-overview-report/overview-report-2023,,National (adm0),Table_A1._Active_anticipatory_action_frameworks_in_2023_-_FINAL.xlsx,Spreadsheet,number of people,2023,"Download available under ""Countries with active anticipatory action frameworks in 2023""",Indicator is the sum of population targeted by all active Anticipatory Action frameworks in the coutry. A value of 0 means no active framework,Done,Done,Done,,,
+Coping Capacity,Institutional,Governance,CC.INS.GOV-EFF,Government effectiveness,"The Government effectiveness captures perceptions of the quality of public services, the quality of the civil service and the degree of its independence from political pressures, the quality of policy formulation and implementation, and the credibility of the government's commitment to such policies.",World Bank,https://data.worldbank.org/indicator/GE.EST?view=chart,,National (adm0),API_GE.EST_DS3%20_en_csv_v2_3404990.csv,Spreadsheet,index,2018-2022,"Download button (csv, xml, excel) on the main page. Indicator is named ""Government Effectiveness: Estimate""",5-year average (2018-2022),Done,Done,Done,,,
+Coping Capacity,Institutional,Governance,CC.INS.GOV-SCI,Subnational Corruption Index,"The Subnational Corruption Database (SCD) provides data on corruption
+ in 1,473 subnational areas of 178 countries. The SCD includes an 
+overall corruption index, the Subnational Corruption Index (SCI), and 
+its two components: the Subnational Grand Corruption Index (SGCI) and 
+Subnational Petty Corruption Index (SPCI). The SCD is constructed by 
+combining data of 807 surveys held in the period 1995–2022 and includes 
+the corruption experiences and perceptions of 1,326,656 respondents 
+along 19 separate dimensions. The data are available for multiple years,
+ allowing longitudinal analyses. At the national level, the SCI 
+correlates strongly with established corruption indices, like the 
+Transparency International Corruption Perceptions Index (CPI) and the 
+World Bank Control of Corruption Index (CCI).
+The Comprehensive SCI uses methods of 
+estimation, interpolation and extrapolation to arrive at a full series 
+for each area. These comprehensive data are most appropriate for 
+descriptive purposes or within-year comparisons.
+The SCD makes use of 13 different sources which each offer 
+subnationally classified corruption data on at least one of the 19 
+corruption dimensions. The SCD harmonizes all subnational 
+classifications into one coherent and consistent classification. ",Global Data Lab,https://globaldatalab.org/,,Subnational (adm1),GDL-CorruptionData-1.0.csv,Spreadsheet,index,2022,"The creation of an account (free) is needed to download the data. All tables can be downloaded on https://globaldatalab.org/mygdl/downloads/ . This indicator is under ""Subnational Corruption Database"" -> ""Data file""","The value for this indicator is under column ""fullsci"". 
+
+The subnational subdivision available on the Global Data Lab (GDL) datasets are very similar to the one used here but some differences exist. This is mainly because the GDL keeps the same subdivision over the years for comparison purposes. As a general rule, when one region in the GDL data corresponds to two or more current ones (oftern because of region division over time), we apply the same value to all of them - details on each country is given below. Some subdivisions have a new name or have a different spelling between in the GDL - these cases were manually matched.
+
+Botswana - Data is available for each of the 10 district but not for the 7 cities and towns at admin1 level.
+
+DRC - Data is available following the pre-2015 province division (11 instead of the current 26).
+
+Malawi - Data is available at the district level (admin2) instead of the region level (admin1). This only happens for Malawi and the region value was computed by averaging district values.
+
+Mauritius - No data is available for North and Saint Brandon Islands. For Mauritius Island, its 9 districts are separated into ""North"" and ""South"". Rodrigues Island has one value for itself. 
+
+Namibia - Data is available following the pre-2013 region division (13 instead of the current 14).
+
+Seychelles - Data is not available
+
+Tanzania - Data is available following the pre-2002 region division (25 instead of the current 31).
+
+Zambia - Data is available following the pre-2012 province division (9 instead of the current 10).",Done,Done,Done,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,

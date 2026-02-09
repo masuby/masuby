@@ -349,7 +349,9 @@ func SeedTanzaniaCommittees() error {
 		return nil
 	}
 
+	// All 31 Tanzania regions (26 Mainland + 5 Zanzibar)
 	regions := [][2]string{
+		// Mainland regions
 		{"Dodoma", "TZ01"}, {"Arusha", "TZ02"}, {"Kilimanjaro", "TZ03"},
 		{"Tanga", "TZ04"}, {"Morogoro", "TZ05"}, {"Pwani", "TZ06"},
 		{"Dar es Salaam", "TZ07"}, {"Lindi", "TZ08"}, {"Mtwara", "TZ09"},
@@ -359,6 +361,10 @@ func SeedTanzaniaCommittees() error {
 		{"Mwanza", "TZ19"}, {"Mara", "TZ20"}, {"Manyara", "TZ21"},
 		{"Njombe", "TZ22"}, {"Katavi", "TZ23"}, {"Simiyu", "TZ24"},
 		{"Geita", "TZ25"}, {"Songwe", "TZ26"},
+		// Zanzibar regions
+		{"Kaskazini Unguja", "TZ27"}, {"Kusini Unguja", "TZ28"},
+		{"Mjini Magharibi", "TZ29"}, {"Kaskazini Pemba", "TZ30"},
+		{"Kusini Pemba", "TZ31"},
 	}
 
 	for _, r := range regions {
