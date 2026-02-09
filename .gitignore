@@ -1,0 +1,61 @@
+# Binaries
+inform-system/inform-server
+inform-system/inform-system
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+.next/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Excel files (data - too large)
+*.xlsx
+*.xls
+
+# Images (keep tracked separately if needed)
+# *.png
+# *.jpg
+# *.jpeg
+
+# GeoJSON data files
+*.geojson
+
+# CSV data files
+# *.csv
