@@ -115,6 +115,16 @@ const Sidebar = ({ currentView, onNavigate, user: propUser }) => {
       color: '#4CAF50',
       description: 'Long-term climate risk and adaptation',
       status: 'available'
+    },
+    {
+      id: 'warning',
+      number: '🚨',
+      name: 'WARNING SYSTEM',
+      shortName: 'Warning',
+      icon: '🚨',
+      color: '#FF5722',
+      description: 'Regional hazard input and PMO validation',
+      status: 'available'
     }
   ];
 

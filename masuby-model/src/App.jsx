@@ -12,6 +12,7 @@ import Module02InformRisk from "./components/inform-risk/Module02InformRisk";
 import Module03WarningSystem from "./components/warning/Module03WarningSystem";
 import Module04Severity from "./components/severity/Module04Severity";
 import Module05Climate from "./components/climate/Module05Climate";
+import WarningModule from "./pages/WarningModule";
 import Sidebar from "./components/navigation/Sidebar";
 import Dashboard from "./components/dashboard/Dashboard";
 import InstitutionDashboard from "./components/dashboard/InstitutionDashboard";
@@ -154,6 +155,8 @@ function MainApp() {
         return <Module04Severity activeWarnings={[]} riskData={null} />;
       case 'module05':
         return <Module05Climate riskData={null} />;
+      case 'warning':
+        return <WarningModule onNavigate={handleNavigation} />;
       case 'analytics':
         return <AnalyticsDashboard />;
       case 'database':

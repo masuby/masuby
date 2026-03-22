@@ -147,7 +147,7 @@ export const MODULE_ACCESS = {
     tools: []
   },
   [USER_ROLES.REGIONAL_COMMITTEE]: {
-    modules: ['module01'], // Education only
+    modules: ['module01', 'warning'], // Education + Warning System
     dataViews: [],
     tools: ['data-entry']
   },
