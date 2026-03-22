@@ -169,7 +169,6 @@ function MainApp() {
         // Redirect to Module03WarningSystem - Flood/Drought risk integrated there
         return <Module03WarningSystem onNavigate={handleNavigation} />;
       case 'risk':
-      case 'warning':
       case 'severity':
       case 'climate':
         return <Home currentCategory={currentView} onNavigateToModule={handleNavigation} />;
