@@ -1,11 +1,26 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   assetsInclude: ['**/*.xlsx'],
   base: '/',  // Custom domain: inform.co.tz
+
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        warning: path.resolve(__dirname, 'warning-app.html')
+      },
+      output: {
+        dir: 'dist',
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name]-[hash].js'
+      }
+    }
+  },
 
   // Proxy API requests to Go backend and external data sources during development
   server: {

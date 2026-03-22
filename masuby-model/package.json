@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:warning": "vite --open warning-app.html",
     "build": "vite build",
+    "build:warning": "vite build --mode warning",
+    "build:warning-only": "rm -rf dist && vite build && mkdir -p dist/warning && cp dist/warning.js dist/warning/ && cp warning-app.html dist/warning/index.html",
     "lint": "eslint .",
     "preview": "vite preview",
+    "preview:warning": "vite preview --open",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
