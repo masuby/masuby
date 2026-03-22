@@ -100,13 +100,13 @@ function MainApp() {
   const canAccess = (view) => {
     if (!user?.role) return false;
 
-    // Modules
-    if (view.startsWith('module')) {
+    // Modules (including special 'warning' module)
+    if (view.startsWith('module') || view === 'warning') {
       return canRoleAccessModule(user.role, view);
     }
 
     // Data views
-    if (['risk', 'warning', 'severity', 'climate'].includes(view)) {
+    if (['risk', 'severity', 'climate'].includes(view)) {
       return canRoleAccessDataView(user.role, view);
     }
 
