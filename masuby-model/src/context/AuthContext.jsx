@@ -17,12 +17,25 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // Development mode: Auto-login as regional_committee for testing
+  const DEV_MODE = true;
+  const DEV_USER = DEV_MODE ? {
+    id: 'dev-user-001',
+    name: 'Arusha Regional Committee',
+    email: 'arusha@committee.tz',
+    role: 'regional_committee',
+    region: 'Arusha',
+    institution: null,
+    permissions: ['canSubmitCommitteeData', 'canViewOwnCommitteeData', 'canAccessCommitteeModule'],
+    avatar: '👤'
+  } : null;
+
+  const [user, setUser] = useState(DEV_USER);
   const [loading, setLoading] = useState(true);
 
   // Load user on mount
   useEffect(() => {
-    const currentUser = authService.getCurrentUser();
+    const currentUser = DEV_MODE ? DEV_USER : authService.getCurrentUser();
     setUser(currentUser);
     setLoading(false);
   }, []);

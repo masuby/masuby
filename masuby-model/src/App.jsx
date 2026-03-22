@@ -226,9 +226,7 @@ function App() {
                 <Route
                   path="/*"
                   element={
-                    <ProtectedRoute>
-                      <MainApp />
-                    </ProtectedRoute>
+                    <MainApp />
                   }
                 />
 
