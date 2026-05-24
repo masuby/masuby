@@ -5,7 +5,8 @@
  */
 
 // Main container
-export { default as HazardAndPMOSystem } from './HazardAndPMOSystem';
+import HazardAndPMOSystem from './HazardAndPMOSystem';
+export { HazardAndPMOSystem };
 
 // Layer components
 export { default as HazardInputPanel } from './layers/HazardInputPanel';

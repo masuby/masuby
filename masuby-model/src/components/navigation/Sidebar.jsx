@@ -138,6 +138,7 @@ const Sidebar = ({ currentView, onNavigate, user: propUser }) => {
   // Flood & Drought removed - integrated into Module02 (INFORM Risk) and Module03 (Warning System)
   const toolsItems = [
     { id: 'analytics', name: 'Analytics', icon: '📊' },
+    { id: 'maps', name: 'Maps Explorer', icon: '🗺️' },
     { id: 'database', name: 'Data Hub', icon: '📦' },
     { id: 'data-entry', name: 'Data Entry', icon: '📝' },
     { id: 'data-sources', name: 'Data Sources', icon: '🔗' }

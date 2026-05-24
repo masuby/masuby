@@ -96,6 +96,63 @@ func CalculateCategory(values []float64) float64 {
 	return Round(sum/float64(count), 1)
 }
 
+// CalculateCategoryGeomean aggregates components into a category using the
+// INFORM scaled geometric mean (PDF Box 6 / footnote 33). Used by Natural
+// Hazard (Table 5) and Vulnerable Groups (Table 13) per the INFORM 2017
+// methodology.
+func CalculateCategoryGeomean(values []float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+
+	valid := make([]float64, 0, len(values))
+	for _, v := range values {
+		if !math.IsNaN(v) && v >= 0 {
+			valid = append(valid, v)
+		}
+	}
+	if len(valid) == 0 {
+		return 0
+	}
+	if len(valid) == 1 {
+		return Round(valid[0], 1)
+	}
+
+	// Step 1: rescale 0–10 → 1–10 via inversion (Box 6)
+	product := 1.0
+	for _, v := range valid {
+		adj := ((10.0-v)/10.0*9.0) + 1.0
+		product *= adj
+	}
+	// Step 2: geometric mean
+	geo := math.Pow(product, 1.0/float64(len(valid)))
+	// Step 3: rescale back to 0–10
+	result := (10.0 - geo) / 9.0 * 10.0
+	return Round(result, 1)
+}
+
+// CalculateCategoryMax returns the maximum of valid component scores. Used by
+// Human Hazard category (PDF Table 7: MAXIMUM of Current vs Projected).
+func CalculateCategoryMax(values []float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+	max := math.Inf(-1)
+	found := false
+	for _, v := range values {
+		if !math.IsNaN(v) && v >= 0 {
+			if v > max {
+				max = v
+			}
+			found = true
+		}
+	}
+	if !found {
+		return 0
+	}
+	return Round(max, 1)
+}
+
 // CalculateWeightedCategory computes a weighted category score
 func CalculateWeightedCategory(values, weights []float64) float64 {
 	if len(values) == 0 || len(values) != len(weights) {
@@ -220,7 +277,8 @@ func ClampOutliers(value, lowerBound, upperBound float64) float64 {
 // RISK CLASSIFICATION
 // =====================================
 
-// ClassifyRisk returns the risk class based on the INFORM methodology
+// ClassifyRisk returns the risk class based on the INFORM methodology (PDF
+// Table 20: thresholds for the final RISK score).
 func ClassifyRisk(riskScore float64) string {
 	switch {
 	case riskScore < 2.0:
@@ -233,6 +291,145 @@ func ClassifyRisk(riskScore float64) string {
 		return "High"
 	default:
 		return "Very High"
+	}
+}
+
+// PerDimensionThresholds mirrors PDF Tables 21 (dimensions) and the operational
+// Tanzania-tuned thresholds embedded in TZ_INFORM_model.xlsx "Thresholds" sheet.
+// Each entry is the upper bound (exclusive) of the named class.
+type ClassThresholds struct {
+	VeryLowMax  float64
+	LowMax      float64
+	MediumMax   float64
+	HighMax     float64
+}
+
+// INFORMGlobalThresholds (PDF Tables 20 + 21)
+var INFORMGlobalThresholds = map[string]ClassThresholds{
+	"RISK":           {VeryLowMax: 2.0, LowMax: 3.5, MediumMax: 5.0, HighMax: 6.5},
+	"HAZARD":         {VeryLowMax: 1.4, LowMax: 2.6, MediumMax: 4.0, HighMax: 6.0},
+	"VULNERABILITY":  {VeryLowMax: 1.9, LowMax: 3.2, MediumMax: 4.7, HighMax: 6.3},
+	"COPING_CAPACITY":{VeryLowMax: 3.1, LowMax: 4.6, MediumMax: 5.9, HighMax: 7.3},
+}
+
+// TanzaniaThresholds (TZ_INFORM_model.xlsx Thresholds sheet, E1:G5)
+var TanzaniaThresholds = map[string]ClassThresholds{
+	"RISK":           {VeryLowMax: 2.5, LowMax: 3.4, MediumMax: 4.3, HighMax: 5.9},
+	"HAZARD":         {VeryLowMax: 1.3, LowMax: 2.0, MediumMax: 3.3, HighMax: 4.7},
+	"VULNERABILITY":  {VeryLowMax: 2.5, LowMax: 3.3, MediumMax: 4.1, HighMax: 5.0},
+	"COPING_CAPACITY":{VeryLowMax: 4.1, LowMax: 5.3, MediumMax: 6.7, HighMax: 7.7},
+}
+
+// ClassifyByThresholds returns the named class given a score and a thresholds
+// table. Used for per-dimension or per-category classification.
+func ClassifyByThresholds(score float64, t ClassThresholds) string {
+	switch {
+	case score < t.VeryLowMax:
+		return "Very Low"
+	case score < t.LowMax:
+		return "Low"
+	case score < t.MediumMax:
+		return "Medium"
+	case score < t.HighMax:
+		return "High"
+	default:
+		return "Very High"
+	}
+}
+
+// ClassifyDimension classifies a dimension score using the given scheme
+// ("TANZANIA" or "GLOBAL").
+func ClassifyDimension(score float64, dimension string, scheme string) string {
+	table := TanzaniaThresholds
+	if scheme == "GLOBAL" {
+		table = INFORMGlobalThresholds
+	}
+	t, ok := table[dimension]
+	if !ok {
+		t = table["RISK"]
+	}
+	return ClassifyByThresholds(score, t)
+}
+
+// LRIResult holds the components of the Lack of Reliability Index per PDF §3.6.1.
+type LRIResult struct {
+	Score              float64 `json:"score"`
+	Classification     string  `json:"classification"`
+	MissingPct         float64 `json:"missing_pct"`
+	MissingScore       float64 `json:"missing_score"`
+	AvgYearGap         float64 `json:"avg_year_gap"`
+	StalenessScore     float64 `json:"staleness_score"`
+	ConflictAggravator bool    `json:"conflict_aggravator"`
+}
+
+// CalculateLRI computes the Lack of Reliability Index (PDF §3.6.1, Figure 4).
+// Three components:
+//   1. Missing data — count of indicators absent (incl. estimated)
+//   2. Out-of-date data — average years older than the reference year
+//   3. Conflict status — HIIK level 4/5 multiplies the score by 1.3
+//
+// Higher LRI = less reliable.
+func CalculateLRI(totalIndicators, missingCount int, yearGaps []float64, inConflict bool) LRIResult {
+	if totalIndicators <= 0 {
+		return LRIResult{}
+	}
+
+	missingPct := float64(missingCount) / float64(totalIndicators) * 100.0
+	missingScore := missingPct / 50.0 * 10.0
+	if missingScore > 10.0 {
+		missingScore = 10.0
+	}
+	if missingScore < 0 {
+		missingScore = 0
+	}
+
+	avgGap := 0.0
+	if len(yearGaps) > 0 {
+		sum := 0.0
+		n := 0
+		for _, g := range yearGaps {
+			if !math.IsNaN(g) {
+				sum += g
+				n++
+			}
+		}
+		if n > 0 {
+			avgGap = sum / float64(n)
+		}
+	}
+	stalenessScore := avgGap / 10.0 * 10.0
+	if stalenessScore > 10.0 {
+		stalenessScore = 10.0
+	}
+
+	score := (missingScore + stalenessScore) / 2.0
+	if inConflict {
+		score *= 1.3
+		if score > 10.0 {
+			score = 10.0
+		}
+	}
+
+	classification := "Very High (least reliable)"
+	switch {
+	case score < 2.0:
+		classification = "Very Low (most reliable)"
+	case score < 4.0:
+		classification = "Low"
+	case score < 6.0:
+		classification = "Medium"
+	case score < 8.0:
+		classification = "High"
+	}
+
+	return LRIResult{
+		Score:              Round(score, 2),
+		Classification:     classification,
+		MissingPct:         Round(missingPct, 1),
+		MissingScore:       Round(missingScore, 2),
+		AvgYearGap:         Round(avgGap, 1),
+		StalenessScore:     Round(stalenessScore, 2),
+		ConflictAggravator: inConflict,
 	}
 }
 
