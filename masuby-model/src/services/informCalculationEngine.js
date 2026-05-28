@@ -263,7 +263,7 @@ export function calculateComponent(componentId, indicatorValues) {
     : 0;
 
   return {
-    score: roundTo(score, 2),
+    score: roundTo(score, 1),
     indicatorScores,
     coverage: roundTo(coverage, 0),
     indicatorCount: values.length,
@@ -303,7 +303,7 @@ export function calculateCategory(dimensionId, categoryId, indicatorValues) {
 
   const totalComponents = Object.keys(cat.components).length;
   return {
-    score: roundTo(score, 2),
+    score: roundTo(score, 1),
     name: cat.name,
     components: componentResults,
     coverage: totalComponents > 0 ? roundTo((scoreValues.length / totalComponents) * 100, 0) : 0,
@@ -345,7 +345,7 @@ export function calculateDimension(dimensionId, indicatorValues) {
   }
 
   return {
-    score: roundTo(score, 2),
+    score: roundTo(score, 1),
     name: dim.name,
     code: dim.code,
     color: dim.color,
@@ -518,19 +518,19 @@ export function calculateINFORMRisk(indicatorValues, opts = {}) {
     ? roundTo((providedIndicators / totalIndicators) * 100, 0)
     : 0;
 
-  // Final RISK = ∛(H × V × LCC)
+  // Final RISK = ∛(H × V × LCC) — Excel: =ROUND(Z^(1/3) * AK^(1/3) * AU^(1/3), 1)
   const H = dimensionScores.HAZARD;
   const V = dimensionScores.VULNERABILITY;
   const LCC = dimensionScores.COPING_CAPACITY;
   if (isFiniteNumber(H) && isFiniteNumber(V) && isFiniteNumber(LCC) && H > 0 && V > 0 && LCC > 0) {
-    const risk = Math.pow(H * V * LCC, 1 / 3);
-    result.risk = roundTo(risk, 2);
+    const risk = Math.pow(H, 1 / 3) * Math.pow(V, 1 / 3) * Math.pow(LCC, 1 / 3);
+    result.risk = roundTo(risk, 1);  // Excel rounds to 1 decimal
     result.classification = classifyRisk(result.risk, scheme);
     result.formula = {
-      expression: `Risk = (${roundTo(H, 2)} × ${roundTo(V, 2)} × ${roundTo(LCC, 2)})^(1/3)`,
-      H: roundTo(H, 2),
-      V: roundTo(V, 2),
-      LCC: roundTo(LCC, 2),
+      expression: `Risk = ${roundTo(H, 1)}^(1/3) × ${roundTo(V, 1)}^(1/3) × ${roundTo(LCC, 1)}^(1/3)`,
+      H: roundTo(H, 1),
+      V: roundTo(V, 1),
+      LCC: roundTo(LCC, 1),
       result: result.risk
     };
   }

@@ -289,13 +289,16 @@ describe('calculateCategory', () => {
     expect(result.score).toBeCloseTo(5, 1);
   });
 
-  it('aggregates Human Hazards via MAX (PDF Table 7)', () => {
+  it('aggregates Human Hazards via MEAN (Excel: =AVERAGE(T:X))', () => {
+    // The Tanzania operational template (TZ_INFORM_model.xlsx) uses
+    // arithmetic mean for all categories, including Human. PDF Table 7 calls
+    // for MAX but the Excel diverges to MEAN.
     const inputs = {
       conflict_barometer: 5,  // refMin=4, refMax=5 → norm=10
       gcri_conflict_probability: 0  // → norm=0
     };
     const result = calculateCategory('HAZARD', 'HUMAN', inputs);
-    expect(result.score).toBe(10);  // MAX of 10 and 0
+    expect(result.score).toBe(5);  // MEAN of 10 and 0
   });
 });
 
@@ -381,7 +384,7 @@ describe('calculateINFORMRisk', () => {
     expect(result.risk).toBeGreaterThan(0);
     expect(result.risk).toBeLessThanOrEqual(10);
     expect(result.classification).not.toBeNull();
-    expect(result.formula.expression).toMatch(/Risk = \(\d/);
+    expect(result.formula.expression).toMatch(/Risk = \d/);
   });
 
   it('formula matches manual cube-root calculation', () => {

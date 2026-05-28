@@ -23,6 +23,7 @@ import DataManagementHub from "./components/admin/DataManagementHub";
 import LiveDataEntry from "./components/data-entry/LiveDataEntry";
 import DataManagementDashboard from "./components/warning/DataManagementDashboard";
 import MapsExplorer from "./pages/MapsExplorer";
+import IndicatorCatalog from "./pages/IndicatorCatalog";
 // HazardRiskDashboard removed - functionality integrated into existing Module02InformRisk and Module03WarningSystem
 import {
   USER_ROLES,
@@ -116,8 +117,8 @@ function MainApp() {
       return canRoleAccessTool(user.role, view);
     }
 
-    // Maps explorer is open to anyone who has any module/data access
-    if (view === 'maps') return true;
+    // Maps explorer + Indicator catalog are open to anyone who can access modules
+    if (view === 'maps' || view === 'indicator-catalog') return true;
 
     // Always allow dashboard and profile
     return ['dashboard', 'profile'].includes(view);
@@ -165,6 +166,8 @@ function MainApp() {
         return <AnalyticsDashboard />;
       case 'maps':
         return <MapsExplorer />;
+      case 'indicator-catalog':
+        return <IndicatorCatalog />;
       case 'database':
         return <DataManagementHub />;
       case 'data-entry':

@@ -1,24 +1,44 @@
 /**
  * INFORM INDICATOR DEFINITIONS — Tanzania Subnational Model
  *
- * Operational catalog: maps to the Tanzania Excel template (TZ_INFORM_model.xlsx).
- * Methodology: INFORM Concept and Methodology v2017 (JRC; Vernaccini), with
- * subnational adaptations per Boxes 1, 3, 5 of the PDF.
+ * Operational catalog: maps directly to the Tanzania Excel template
+ * (TZ_INFORM_model.xlsx, sheet "INFORM SADC 2024"). Aggregation methods
+ * mirror the Excel formulas verbatim so that this engine produces the same
+ * numbers the spreadsheet does for the same inputs.
+ *
+ * Methodology background: INFORM Concept and Methodology v2017 (JRC;
+ * Vernaccini). Where the Tanzania Excel deviates from the PDF (notably:
+ * Excel uses arithmetic mean at category level, PDF specifies geometric
+ * mean for Natural Hazards and Vulnerable Groups), we follow the EXCEL.
+ * The PDF deviations are documented in the per-component comments.
+ *
+ * EXCEL PIPELINE — operational source of truth:
+ *
+ *   Indicators (raw + transform + normalize → 0–10)
+ *      ↓  AVERAGEIFS  (arithmetic mean over indicators whose header
+ *                      matches the component name)
+ *   Components (0–10)
+ *      ↓  =AVERAGE(...)
+ *   Categories (0–10)
+ *      ↓  =ROUND((10 - GEOMEAN(((10-cat1)/10*9+1), ((10-cat2)/10*9+1))) / 9*10, 1)
+ *   Dimensions (0–10, rounded to 1 dp)
+ *      ↓  =ROUND(H^(1/3) * V^(1/3) * LCC^(1/3), 1)
+ *   RISK (0–10, rounded to 1 dp)
  *
  * Each indicator declares:
  *   refMin / refMax  — bounds for min-max normalization to 0–10
- *   polarity         — NEGATIVE (higher value = higher risk; e.g. flood exposure)
- *                      POSITIVE (higher value = lower risk; e.g. HDI, electricity)
- *   transform        — none | log | log1p | sqrt | sqr   (applied before normalization)
- *   informCore       — true if the indicator is part of INFORM 2017 Core (PDF Annex 2);
- *                      false if it is a Tanzania subnational extension
+ *   polarity         — NEGATIVE (higher raw = higher risk; e.g. flood exposure)
+ *                      POSITIVE (higher raw = lower risk; e.g. HDI, electricity)
+ *   transform        — 'none' | 'log' | 'log1p' | 'sqrt' | 'sqr'
+ *   informCore       — true if part of INFORM 2017 Core (PDF Annex 2)
+ *   tanzaniaExtension — true if Tanzania-specific subnational extension
  *
- * Aggregation methods are declared at category/component level per PDF
- * Tables 5, 7, 11, 13, 16, 18:
- *   MEAN     — arithmetic mean
- *   WMEAN    — weighted arithmetic mean (uses each child's weight)
- *   GEOMEAN  — INFORM scaled geometric mean (Box 6 / footnote 33)
- *   MAX      — maximum
+ * Aggregation methods:
+ *   MEAN     — arithmetic mean   (Excel: AVERAGE / AVERAGEIFS)
+ *   GEOMEAN  — INFORM scaled geometric mean (Excel formula in Box 6 / footnote 33)
+ *   WMEAN    — weighted arithmetic mean (available but unused — kept for future
+ *              PDF-strict mode)
+ *   MAX      — maximum (available but unused at category level by Excel)
  */
 
 // ============================================================================
@@ -39,26 +59,28 @@ export const COMPLETE_HIERARCHY = {
     categories: {
       NATURAL: {
         name: 'Natural Hazards',
-        aggregation: 'GEOMEAN',  // PDF Table 5: GEOMETRIC AVERAGE across components
+        // Excel: =AVERAGE(G3:R3). PDF Table 5 calls for geometric average, but
+        // the Tanzania operational template uses arithmetic mean.
+        aggregation: 'MEAN',
         weight: 0.5,
         components: {
           coastal_hazards: {
             name: 'Coastal Hazards',
             code: 'HA.NAT.CH',
-            aggregation: 'MEAN',
-            tanzaniaExtension: true,  // not in INFORM Core
+            aggregation: 'MEAN',  // Excel: AVERAGEIFS across matching indicators
+            tanzaniaExtension: true,
             indicators: ['coastal_erosion', 'sea_level_rise']
           },
           drought: {
             name: 'Drought',
             code: 'HA.NAT.DR',
-            aggregation: 'MEAN',  // PDF Table 5: arithmetic of Historical Impact + Agricultural Drought
+            aggregation: 'MEAN',
             indicators: ['historic_drought_frequency']
           },
           earthquake: {
             name: 'Earthquake',
             code: 'HA.NAT.EQ',
-            aggregation: 'GEOMEAN',  // PDF Table 5: GEOMEAN of MMI VI/VIII abs+rel
+            aggregation: 'MEAN',
             indicators: ['earthquake_exposure']
           },
           environmental_degradation: {
@@ -71,40 +93,40 @@ export const COMPLETE_HIERARCHY = {
           flood: {
             name: 'Flood',
             code: 'HA.NAT.FL',
-            aggregation: 'GEOMEAN',  // PDF Table 5: GEOMEAN of abs+rel
+            aggregation: 'MEAN',
             indicators: ['flood_exposure']
           },
           heatwave: {
             name: 'Heatwave',
             code: 'HA.NAT.HW',
-            aggregation: 'MAX',
+            aggregation: 'MEAN',
             tanzaniaExtension: true,
             indicators: ['heatwave_exposure']
           },
           landslide: {
             name: 'Landslide',
             code: 'HA.NAT.LS',
-            aggregation: 'MAX',
-            tanzaniaExtension: true,  // PDF Box 1: allowed as subnational extension (Colombia)
+            aggregation: 'MEAN',
+            tanzaniaExtension: true,  // PDF Box 1: allowed as subnational extension
             indicators: ['landslide_exposure']
           },
           lightning: {
             name: 'Lightning',
             code: 'HA.NAT.LT',
-            aggregation: 'MAX',
+            aggregation: 'MEAN',
             tanzaniaExtension: true,
             indicators: ['lightning_casualties']
           },
           storms_cyclone: {
-            name: 'Tropical Cyclone',
+            name: 'Storms & Cyclone',
             code: 'HA.NAT.SC',
-            aggregation: 'MEAN',  // PDF p.25: arithmetic average of Cyclone Wind and Storm Surge
+            aggregation: 'MEAN',
             indicators: ['cyclone_exposure', 'storm_exposure', 'cyclone_max_speed']
           },
           volcano: {
             name: 'Volcano',
             code: 'HA.NAT.VO',
-            aggregation: 'MAX',
+            aggregation: 'MEAN',
             tanzaniaExtension: true,
             indicators: ['volcano_exposure']
           },
@@ -112,7 +134,7 @@ export const COMPLETE_HIERARCHY = {
             name: 'Wildfire',
             code: 'HA.NAT.WF',
             aggregation: 'MEAN',
-            tanzaniaExtension: true,  // PDF Box 1: allowed as subnational extension (Lebanon)
+            tanzaniaExtension: true,  // PDF Box 1: allowed as subnational extension
             indicators: ['burned_area', 'fire_weather_index']
           },
           zoonoses_plants_pests: {
@@ -126,25 +148,26 @@ export const COMPLETE_HIERARCHY = {
       },
       HUMAN: {
         name: 'Human Hazards',
-        aggregation: 'MAX',  // PDF Table 7: MAXIMUM of Current vs Projected
+        // Excel: =AVERAGE(T3:X3). PDF Table 7 calls for MAX of Current vs Projected.
+        aggregation: 'MEAN',
         weight: 0.5,
         components: {
           conflict_intensity: {
             name: 'Conflict Intensity',
             code: 'HA.HUM.CI',
-            aggregation: 'MAX',
+            aggregation: 'MEAN',
             indicators: ['conflict_barometer']
           },
           conflict_risk: {
             name: 'Projected Conflict Risk',
             code: 'HA.HUM.CR',
-            aggregation: 'GEOMEAN',  // PDF Figure 6: geomean(VC, log(HVC))
+            aggregation: 'MEAN',
             indicators: ['gcri_conflict_probability']
           },
           hazardous_material: {
             name: 'Hazardous Material',
             code: 'HA.HUM.HM',
-            aggregation: 'MAX',
+            aggregation: 'MEAN',
             tanzaniaExtension: true,  // PDF §5.2: technological hazards excluded from Core
             indicators: ['hazardous_material']
           },
@@ -158,7 +181,7 @@ export const COMPLETE_HIERARCHY = {
           vehicle_accidents: {
             name: 'Vehicle Accidents',
             code: 'HA.HUM.VA',
-            aggregation: 'MAX',
+            aggregation: 'MEAN',
             tanzaniaExtension: true,
             indicators: ['vehicle_accidents']
           }
@@ -176,21 +199,22 @@ export const COMPLETE_HIERARCHY = {
     categories: {
       SOCIO_ECONOMIC: {
         name: 'Socio-Economic Vulnerability',
-        aggregation: 'WMEAN',  // PDF Table 11: ARITHMETIC AVERAGE 50/25/25
+        // Excel: =AVERAGE(AA3:AD3). PDF Table 11 specifies 50/25/25 weighted
+        // arithmetic average; Tanzania template uses unweighted mean.
+        aggregation: 'MEAN',
         weight: 0.5,
         components: {
           development_poverty: {
-            name: 'Development & Deprivation',
+            name: 'Development & Poverty',
             code: 'VU.SE.DP',
-            aggregation: 'GEOMEAN',  // PDF Table 11: GEOMEAN(HDI, MPI)
-            weight: 0.50,  // PDF Table 11
+            // Excel uses arithmetic mean here too; PDF would say GEOMEAN(HDI, MPI).
+            aggregation: 'MEAN',
             indicators: ['hdi', 'gender_inequality_index', 'multidimensional_poverty', 'wealth_inequality']
           },
           economic_dependency: {
-            name: 'Aid Dependency',
+            name: 'Economic Dependency',
             code: 'VU.SE.ED',
-            aggregation: 'MEAN',  // PDF Table 11: ARITHMETIC AVERAGE
-            weight: 0.25,  // PDF Table 11
+            aggregation: 'MEAN',
             indicators: ['oda_received', 'personal_remittances', 'dependency_ratio']
           },
           habitat: {
@@ -198,7 +222,6 @@ export const COMPLETE_HIERARCHY = {
             code: 'VU.SE.HA',
             aggregation: 'MEAN',
             tanzaniaExtension: true,
-            weight: 0.25,  // shared with economic_dependency until Tanzania weights confirmed
             indicators: ['informal_settlements', 'homes_high_risk_areas', 'urban_population']
           },
           livelihoods: {
@@ -206,26 +229,26 @@ export const COMPLETE_HIERARCHY = {
             code: 'VU.SE.LV',
             aggregation: 'MEAN',
             tanzaniaExtension: true,
-            weight: 0.25,
             indicators: ['food_insufficient', 'food_ipc_classification']
           }
         }
       },
       VULNERABLE_GROUPS: {
         name: 'Vulnerable Groups',
-        aggregation: 'GEOMEAN',  // PDF Table 13: GEOMEAN(Uprooted, Other VG)
+        // Excel: =AVERAGE(AF3:AI3). PDF Table 13 specifies GEOMEAN; Tanzania uses arithmetic.
+        aggregation: 'MEAN',
         weight: 0.5,
         components: {
           displaced_people: {
-            name: 'Uprooted People',
-            code: 'VU.VG.UP',
-            aggregation: 'MEAN',  // PDF Table 13: arithmetic of log(abs), rel-GNA
+            name: 'Displaced People',
+            code: 'VU.VG.DP',
+            aggregation: 'MEAN',
             indicators: ['internal_displaced', 'refugees_asylum_seekers']
           },
           health_conditions: {
             name: 'Health Conditions',
             code: 'VU.VG.HC',
-            aggregation: 'MEAN',  // PDF Table 13: arithmetic average (within Other VG)
+            aggregation: 'MEAN',
             indicators: ['life_expectancy', 'cholera_cases', 'malaria_mortality', 'malaria_prevalence',
                          'measles_incidence', 'tuberculosis_incidence', 'dst_prevalence',
                          'people_disabilities', 'people_chronic_illness']
